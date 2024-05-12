@@ -41,43 +41,36 @@ void yes(){
     cout<<"YES"<<endl;
 }
 
-int n, m, c;
-int money[1001];
-int dp[1001][1001][2];
-vector<int> adj[1001];
+int n;
+ll dp[501][501];
+ll a[501];
+ll pref_sum[501];
 void init(){
-	for(int i=0;i<=n; i++){
-		for(int j=0;j<=1000; j++)
-			for(int k=0;k<2;k++)
-				dp[i][j][k] = -1;
-	}
+	for(int i=0;i<501;i++)
+		for(int j=0;j<501; j++)
+			dp[i][j] = -1;
 }
-int max_(int x, int t, bool stop){
-	if(x==1&&stop)
-		return -c*t*t;
-	if(t>=1000)
-		return -c*t*t;
-	int &d = dp[x][t][stop];
-	if(d!=-1) return d;
-	d = -int(1e8);
-	for(auto y: adj[x]){
-		int g = max(max_(y, t+1, 1), max_(y, t+1, 0));
-		d = max(d, g+money[y]);
-	}
-	return d;
+ll min_(int l, int r){
+	if(l==r) return 0;
+	if(dp[l][r]!=-1)
+		return dp[l][r];
+	dp[l][r] = ll(1e18);
+	for(int i=l;i<r;i++){
+		ll curr = min_(l, i)+pref_sum[i]-pref_sum[l-1]+min_(i+1, r)+pref_sum[r]-pref_sum[i];
+		dp[l][r] = min(dp[l][r], curr);	
+	}	
+	return dp[l][r];
 }
 void solve()
 {
-	cin>>n>>m>>c;
-	for(int i=1; i<=n; i++) 
-		cin>>money[i];
-	for(int i=0;i<m;i++){
-		int a, b;
-		cin>>a>>b;
-		adj[a].pb(b);
-	}
+	cin>>n;
 	init();
-	cout<<max(max_(1, 0, 0), 0)<<endl;
+	pref_sum[0] = 0;	
+	for(int i=1;i<=n;i++) {
+		cin>>a[i];
+		pref_sum[i] = pref_sum[i-1] + a[i];
+	}
+	cout<<min_(1, n)<<endl;
 	return;
 }
 

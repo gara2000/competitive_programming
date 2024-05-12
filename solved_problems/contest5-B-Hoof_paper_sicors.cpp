@@ -41,43 +41,46 @@ void yes(){
     cout<<"YES"<<endl;
 }
 
-int n, m, c;
-int money[1001];
-int dp[1001][1001][2];
-vector<int> adj[1001];
+int n, k;
+int dp[100001][21][3];
+int a[100001];
+int win[3] = {2, 0, 1};
 void init(){
-	for(int i=0;i<=n; i++){
-		for(int j=0;j<=1000; j++)
-			for(int k=0;k<2;k++)
-				dp[i][j][k] = -1;
-	}
+	for(int i=0;i<100001;i++)
+		for(int j=0;j<=20; j++)
+			for(int l=0; l<3; l++)
+				dp[i][j][l] = -1;
 }
-int max_(int x, int t, bool stop){
-	if(x==1&&stop)
-		return -c*t*t;
-	if(t>=1000)
-		return -c*t*t;
-	int &d = dp[x][t][stop];
+int max_(int i, int r, int g){
+	if(i>n) return 0;
+	int &d = dp[i][r][g];
 	if(d!=-1) return d;
-	d = -int(1e8);
-	for(auto y: adj[x]){
-		int g = max(max_(y, t+1, 1), max_(y, t+1, 0));
-		d = max(d, g+money[y]);
+	d = 0;
+	for(int x=0;x<3;x++){
+		if(g==x)
+			d = max(d, max_(i+1, r, x));
+		else if(r>0)
+			d = max(d, max_(i+1, r-1, x));
 	}
+	if(win[g]==a[i]) 
+		d++; 
 	return d;
 }
 void solve()
 {
-	cin>>n>>m>>c;
-	for(int i=1; i<=n; i++) 
-		cin>>money[i];
-	for(int i=0;i<m;i++){
-		int a, b;
-		cin>>a>>b;
-		adj[a].pb(b);
-	}
+	cin>>n>>k;
 	init();
-	cout<<max(max_(1, 0, 0), 0)<<endl;
+	for(int i=1;i<=n;i++) {
+		char c;
+		cin>>c;
+		if(c=='H') a[i]=0;
+		if(c=='P') a[i]=1;
+		if(c=='S') a[i]=2;
+	}
+	int ans = 0;
+	for(int i=0;i<3;i++)
+		ans = max(ans, max_(1, k, i));
+	cout<<ans<<endl;
 	return;
 }
 
