@@ -41,43 +41,62 @@ void yes(){
     cout<<"YES"<<endl;
 }
 
-int n, k;
-vector<int> col[501];
-vector<int> row[501];
-map<ii, int> m;
+int n;
+vector<pair<double,double>> cows(1001);
+vector<bool> vis(1001);
+vector<bool> row(1001);
+vector<vector<bool>> relation(1001, row);
+vector<int> adj[1001];
+double squared(double x, double y){
+	return (x-y)*(x-y);
+}
+
+double distance(int i, int j){
+	return sqrt(squared(cows[i].fi, cows[j].fi)+squared(cows[i].se, cows[j].se));
+}
+void init(double d){
+	for(int i=0;i<n;i++){
+		adj[i].clear();
+		vis[i] = 0;
+		for(int j=0;j<n;j++)
+		{
+			if(i==j)
+				continue;
+			if(distance(i, j)<=d)
+				adj[i].pb(j);
+		}
+	}
+}
+int dfs(int s){
+	vis[s]=1;
+	int c=1;
+	bool test = false;
+	for(auto y: adj[s]){
+		if(!vis[y])
+			c += dfs(y);
+	}
+	return c;
+}
+bool f(ll x){
+	double d = sqrt(double(x));
+	init(d);
+	return (dfs(0)==n);
+}
 void solve()
 {
-	cin>>n>>k;
-	for(int i=0;i<k;i++){
-		int x, y;
-		cin>>x>>y;
-		col[y].pb(x);
-		row[x].pb(y);
-		m[make_pair(x, 0)]++;
-		m[make_pair(y, 1)]++;
+	cin>>n;
+	for(int i=0;i<n;i++){
+		cin>>cows[i].fi>>cows[i].se;
 	}
-	int c = 0;
-	int ans = 0;
-	while(c<k){
-		ans++;
-		set<pair<int, pair<int,int>>> s;
-		for(auto p: m){
-			s.insert(make_pair(-p.se, make_pair(p.fi.fi, p.fi.se)));
-		}
-		auto [num, p] = *s.begin();
-		num = -num;
-		c+=num;
-		// if it is a row
-		if(p.se==0){
-			for(auto y: row[p.fi]) m[make_pair(y, 1)]--;
-		}
-		// if it is a column
-		if(p.se==1){
-			for(auto x: col[p.fi]) m[make_pair(x, 0)]--;
-		}
-		m[p] = 0;
+	ll r = ll(1e10), l = 0;
+	while(l<r){
+		ll x = (l+r)/2;
+		if(f(x))
+			r = x;
+		else
+			l = x+1;
 	}
-	cout<<ans<<endl;
+	cout<<l<<endl;
 	return;
 }
 

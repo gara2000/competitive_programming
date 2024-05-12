@@ -8,6 +8,6 @@ if [ $# -le 2 ]; then
     exit 1
 else
     NAME="contest$1-$2-$3"
-    zip solved_problems/$NAME.zip data/*
+    zip solved_problems/${NAME}_samples.zip data/*
     cp main.cpp solved_problems/$NAME.cpp
 fi
