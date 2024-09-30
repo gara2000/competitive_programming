@@ -1,6 +1,8 @@
 DIRNAME=$(dirname $0)
 cd $DIRNAME/../data
 
+echo "=== Compiling ==="
+g++ ../main.cpp -o ../a.out
 for i in *.in; do
 	echo  "=== $i ==="
 	../a.out < $i 

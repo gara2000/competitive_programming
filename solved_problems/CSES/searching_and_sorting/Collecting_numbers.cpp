@@ -4,9 +4,8 @@
 using namespace std;
 
 typedef complex<double> pt;
-typedef long long ll;
 typedef pair<int,int> ii;
-typedef pair<ll,ll> pll;
+typedef long long ll;
 
 int main(){
 	ios_base::sync_with_stdio(false);
@@ -15,20 +14,19 @@ int main(){
 	cout<<setprecision(17);
 
 	/// SAVE THE FILE !!!///
-	ll n, k;
-	cin>>n>>k;
-	set<pll> s;
+	int n;
+	cin>>n;
+	vector<int> vis(n+1);
+	int ans = 0;
 	loop(n){
-		ll curr = i+1;
-		ll q = (k+1)/n;
-		curr+=q*n;
-		while(curr%(k+1)){
-			curr+=n-(curr/(k+1));
+		int x;
+		cin>>x;
+		if(!vis[x-1]){
+			ans++;
 		}
-		s.insert({curr, i+1});
+		vis[x]=1;
 	}
-	for(auto p: s)
-		cout<<p.second<<" ";
-	cout<<endl;
+	cout<<ans<<endl;
+	
 	return 0;
 }
