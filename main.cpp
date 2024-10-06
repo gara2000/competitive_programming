@@ -1,34 +1,35 @@
 #include <bits/stdc++.h>
-#define loop(n) for(int i=0;i<n;i++)
-#define all(a) a.begin(),a.end()
 using namespace std;
-
-typedef complex<double> pt;
 typedef long long ll;
-typedef pair<int,int> ii;
-typedef pair<ll,ll> pll;
 
+ll m = ll(1e9)+7;
+
+ll pow(ll a, ll b){
+	ll res = 1;
+	while(b){
+		if(b&1) res = (res*a)%m;
+		a = (a*a)%m;
+		b >>=1;
+	}
+	return res;
+}
 int main(){
 	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
-	cout<<setprecision(17);
+	cin.tie(NULL);cout.tie(NULL);
 
-	/// SAVE THE FILE !!!///
-	ll n, k;
-	cin>>n>>k;
-	set<pll> s;
-	loop(n){
-		ll curr = i+1;
-		ll q = (k+1)/n;
-		curr+=q*n;
-		while(curr%(k+1)){
-			curr+=n-(curr/(k+1));
+	int n;
+	cin>>n;
+	while(n--){
+		ll a, b, c;
+		cin>>a>>b>>c;
+		ll res = 1;
+		while(c){
+			if(c&1) res = (res*a)%m;
+			a = pow(a, b);
 		}
-		s.insert({curr, i+1});
+		while(c--)
+			a = pow(a, b);
+		cout<<a<<endl;
 	}
-	for(auto p: s)
-		cout<<p.second<<" ";
-	cout<<endl;
 	return 0;
 }
