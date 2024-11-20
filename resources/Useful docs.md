@@ -51,6 +51,23 @@ sqrt(a);
 ceil(x), floor(y);
 ```
 
+## Policy-based data structures
+### Headers
+```c++
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds
+```
+### Indexed set
+```c++
+typedef tree<int,null_type,less<int>,rb_tree_tag,tree_order_statistics_node_update> indexed_set;
+indexed_set s;
+s.insert(2);
+s.insert(3);
+auto x = s.find_by_order(1);
+cout<<*x<<endls; // 3
+int i = order_of_key(2); // 0
+ ```
+
 ## STL containers
 ```c++
 myCon.begin(), myCon.end();
@@ -101,6 +118,50 @@ s.find("pattern"); // look for first occurence
 s.find("pattern", pos); // look for first occurence after position 42
 ```
 
+## Range queries
+### Static sparse tables
+```c++
+int m[n][log2(n)];
+m[i][p] = min(m[i][p-1], m[1+1<<(p-1)][p-1]); // p is the current power of 2
+int min(int a, int b){
+    int p = log2(b-a+1);
+    return min(m[a][p], m[b-1<<p+1][p]);
+}
+```
+### Binary indexed trees (Fenwick trees)
+let p(k) denote the largest power of two that divides k, p(k) can be calculated as follows: `p(k) = k&-k`
+#### calculate the range sum sum_q(1, k)
+```c++
+int sum(int k){
+    int s = 0;
+    while(k>=1){
+        s+=tree[k];
+        k-=k&-k;
+    }
+    return s;
+}
+```
+#### Construct the tree
+```c++
+vector<int> get_tree_1(int n){
+    vector<int> tree(n+1);
+    tree[1] = a[1];
+    for(int i=2;i<=n;i++){
+        int pi = i&-i;
+        tree[i] = a[i]+sum(i-1)-sum(i-pi);// sum can either be calculated by the above function (O(log(N))) or by using a prefix array (O(1))
+    }
+    return tree;
+}
+```
+#### Update the tree
+Increase the array value at position k by x (in case of value update we can set x = new_value - old_value)
+```c++
+void add(int k, int x){
+    while(k<=n){
+        tree[k]+=x;
+        k+=k&-k;
+    }
+}```
 
 
 ## Complex numbers & geometry
